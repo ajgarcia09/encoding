@@ -1,22 +1,32 @@
 public class Symcode {
     public static void main(String[]args){
-        //readFile();
-        String str = "gimble";
+        String str = "MACBETH";
+        String padding = "";
+        int padCount = str.length() %3;
+        //str not divisible by 3
+        if(padCount >0){
+            for(; padCount <3; padCount++){
+                padding += "$$";
+                str += "\0";
+            }
+        }
+        System.out.println("Padding is: " + padding);
         String binaryString = buildBinaryString(str);
         System.out.println(binaryString);
-
         String subset = "";
         System.out.println("binaryString.length() = " + binaryString.length());
         StringBuilder symBuilder = new StringBuilder();
         for(int i = 0; i <= binaryString.length()-2; i = i+3){
-            System.out.println("i = " +i);
-            System.out.println("i+2 = " + (i+3));
+            //System.out.println("i = " +i);
+            //System.out.println("i+2 = " + (i+3));
             subset = binaryString.substring(i,i+3);
-            System.out.println("subset is: " + subset);
+            //System.out.println("subset is: " + subset);
             int symIndex = computeSymIndex(subset);
             char symcoded = computeSymcode(symIndex);
-
+            symBuilder.append(symcoded);
+            System.out.println("symBuilder now: " + symBuilder.toString());
         }
+        System.out.println("Final symBuilder + padding: " + symBuilder.append(padding).toString());
     }
 
     public static char computeSymcode(int symIndex) {
@@ -52,6 +62,7 @@ public class Symcode {
     }
 
     public static int computeSymIndex(String subset) {
+        System.out.println("Subset in computeSymIndex: " + subset);
         int sum =0;
         if(subset.charAt(2) == '1'){
             sum += 1;
@@ -67,12 +78,9 @@ public class Symcode {
     }
 
     public static String buildBinaryString(String str) {
-        //pad string
-       // String paddedStr = padString(str);
+
         char current = ' ';
         StringBuilder builder = new StringBuilder();
-
-
         for(int i=0; i<str.length();i++){
             current = str.charAt(i);
             int ascii = (int) current;
@@ -82,7 +90,11 @@ public class Symcode {
             System.out.println("char: " + current + " hex: " + hexString + " binary: " + binary + " ");
             builder.append(binary);
         }
-        System.out.println("Entire string:");
+        System.out.println("Entire string:" + builder.toString());
+        //the subset of the result string minus the padding, concatenated with the padding
+        //String encoded = builder.toString();
+        //String result = encoded.substring(0, encoded.length() - padding.length()) + padding;
+
         return builder.toString();
     }
 }

@@ -1,6 +1,6 @@
 public class Symcode {
     public static void main(String[] args) {
-        String str = "wabe";
+        String str = "jayqwelli";
         StringBuilder symBuilder = new StringBuilder();
         //how many bits str will take up
         int bitSize = str.length() * 8;
@@ -44,8 +44,25 @@ public class Symcode {
             binaryString = binaryString;
             System.out.println(binaryString);
             //encode
-            symBuilder = encode(symBuilder,binaryString,bitSize);
+            symBuilder = encode(symBuilder,binaryString);
         }
+    }
+
+    public static StringBuilder encode(StringBuilder symBuilder, String binaryString){
+        String subset = "";
+        System.out.println("binaryString.length() = "+binaryString.length());
+        for(int i = 0;i <= binaryString.length() - 3;i =i+3){
+            System.out.println("binaryString.length()-3: " + (binaryString.length() - 3));
+            System.out.println("i = " + i);
+            subset = binaryString.substring(i, i + 3);
+            System.out.println("subset = " + subset);
+            int symIndex = computeSymIndex(subset);
+            char symcoded = computeSymcode(symIndex);
+            symBuilder.append(symcoded);
+            System.out.println("symBuilder now: " + symBuilder.toString());
+        }
+
+        return symBuilder;
     }
     //TODO add check to return if there is no need to pad
 
@@ -79,7 +96,8 @@ public class Symcode {
             System.out.println("padBuilder: " + padBuilder.toString());
         }
 
-        //String finalPadding = padBuilder.toString();
+        //add the padding to the end of the encoded string
+        symBuilder.append(padBuilder.toString());
 
 
         return symBuilder;

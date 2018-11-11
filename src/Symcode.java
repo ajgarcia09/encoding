@@ -1,11 +1,11 @@
 public class Symcode {
     public static void main(String[] args) {
-        String str = "";
+        String str = "wabe";
         StringBuilder symBuilder = new StringBuilder();
         //how many bits str will take up
         int bitSize = str.length() * 8;
         System.out.println("bitSize = " + bitSize);
-        int remainder = bitSize % 24; //how many bits in the next slot of size 48 bits
+        int remainder = bitSize % 24; //how many bits in the next slot of size 24 bits
         System.out.println("remainder = " + remainder);
         if (remainder != 0) {
             System.out.println("Remainder != 0");
@@ -18,7 +18,7 @@ public class Symcode {
                 System.out.println("binaryString with extra bit at the end: ");
                 System.out.println(binaryString);
                 //encode
-                symBuilder = encode(symBuilder, binaryString);
+                symBuilder = encode(symBuilder, binaryString,bitSize);
                 //add some padding
                 //subtract the bit we added to binaryString
                 System.out.println("Subtracting 1 from padBits:");
@@ -31,7 +31,7 @@ public class Symcode {
                 String binaryString = buildBinaryString(str,0);
                 System.out.println(binaryString);
                 //encode
-                symBuilder = encode(symBuilder,binaryString);
+                symBuilder = encode(symBuilder,binaryString,bitSize);
                 //add some padding
                // symBuilder = pad(padBits, symBuilder);
                 System.out.println("Final symBuilder with padding: " + symBuilder.toString());
@@ -44,29 +44,20 @@ public class Symcode {
             binaryString = binaryString;
             System.out.println(binaryString);
             //encode
-            symBuilder = encode(symBuilder,binaryString);
+            symBuilder = encode(symBuilder,binaryString,bitSize);
         }
     }
+    //TODO add check to return if there is no need to pad
 
-   /* public static StringBuilder pad(int bitSize,int padBits, StringBuilder symBuilder,) {
-        for (int i = bitSize+1; i <= padBits - 3; i = i + 3) {
-            String padSubset = paddingString.substring(i, i + 3);
-            System.out.println("padSubset = " + padSubset);
-            symBuilder.append('$');
-            System.out.println("symbuilder with padding: " + symBuilder.toString());
-        }
-        return symBuilder;
-    }*/
-
-    public static StringBuilder encode(StringBuilder symBuilder, String binaryString) {
+    public static StringBuilder encode(StringBuilder symBuilder, String binaryString, int encodingBits) {
         String subset = "";
-        int remainder = binaryString.length() % 3;
-        int upperBound = binaryString.length() + remainder;
+        int remainder = encodingBits % 3;
+        int neededBits = 3 - remainder;
+        int upperBound = encodingBits + neededBits;
         System.out.println("binaryString.length() = "+binaryString.length());
-        for(int i = 0;i < upperBound - 3;i =i+3){
+        for(int i = 0;i <= upperBound - 3;i =i+3){
             System.out.println("binaryString.length()-3: " + (binaryString.length() - 3));
             System.out.println("i = " + i);
-
             subset = binaryString.substring(i, i + 3);
             System.out.println("subset = " + subset);
             int symIndex = computeSymIndex(subset);
@@ -74,15 +65,23 @@ public class Symcode {
             symBuilder.append(symcoded);
             System.out.println("symBuilder now: " + symBuilder.toString());
         }
-//        if(remainder != 0){
-//            if(remainder == 1){
-//                symBuilder.append(binaryString.charAt(binaryString.length() -1) + binaryString.charAt(binaryString.length() - 2) + '0');
-//
-//            }
-//            if(remainder == 2){
-//                symBuilder.append(binaryString.charAt(binaryString.length() - 1) + '0' + '0');
-//            }
-//        }
+        System.out.println("neededBits = " + neededBits);
+        System.out.println("upperBound = " + upperBound);
+        System.out.println("binaryString.length()-1 = " + (binaryString.length()-1));
+        System.out.println("padding bits = " + binaryString.substring(upperBound,binaryString.length()-1));
+
+        StringBuilder padBuilder = new StringBuilder();
+        String padSubset = "";
+        for(int i = upperBound; i <= (binaryString.length()-1)-3; i = i+3){
+            padSubset = binaryString.substring(i, i+3);
+            System.out.println("padSubset: " + padSubset);
+            padBuilder.append('$');
+            System.out.println("padBuilder: " + padBuilder.toString());
+        }
+
+        //String finalPadding = padBuilder.toString();
+
+
         return symBuilder;
     }
 

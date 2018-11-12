@@ -1,10 +1,10 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class Symcode {
     public static void main(String[] args) {
-        try (BufferedReader br = new BufferedReader(new FileReader("/Users/ajgarcia09/Documents/Symantec/src/myFile.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("/Users/ajgarcia09/Documents/Symantec/src/myFile.txt")))
+        {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));
             String sCurrentLine;
 
             while ((sCurrentLine = br.readLine()) != null) {
@@ -26,12 +26,16 @@ public class Symcode {
                         //subtract the bit we added to binaryString
                         padBits = padBits- 1;
                         //TODO write output to file instead of printing to console
+                        writer.write(symBuilder.toString());
+                        writer.newLine();
                         System.out.println("Final symBuilder with padding: " + symBuilder.toString());
                     } else {
                         String binaryString = buildBinaryString(str,0);
                         //encode with padding
                         symBuilder = encode(symBuilder,binaryString,bitSize);
                         //TODO write output to file instead of printing to console
+                        writer.write(symBuilder.toString());
+                        writer.newLine();
                         System.out.println("Final symBuilder with padding: " + symBuilder.toString());
                     }
                     //gimble
@@ -41,9 +45,12 @@ public class Symcode {
                     //encode without padding
                     symBuilder = encode(symBuilder,binaryString);
                     //TODO write output to file instead of printing to console
+                    writer.write(symBuilder.toString());
+                    writer.newLine();
                     System.out.println("Final symBuilder with padding: " + symBuilder.toString());
                 }
             }
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

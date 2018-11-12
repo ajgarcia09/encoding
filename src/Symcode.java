@@ -4,7 +4,7 @@ public class Symcode {
     public static void main(String[] args) {
         try (BufferedReader br = new BufferedReader(new FileReader("/Users/ajgarcia09/Documents/Symantec/src/myFile.txt")))
         {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("/Users/ajgarcia09/Documents/Symantec/src/output.txt"));
             String sCurrentLine;
 
             while ((sCurrentLine = br.readLine()) != null) {
@@ -15,17 +15,13 @@ public class Symcode {
                 int bitSize = str.length() * 8;
                 int remainder = bitSize % 24; //how many bits in the next slot of size 24 bits
                 if (remainder != 0) {
-                    //System.out.println("Remainder != 0");
                     int padBits = 24 - remainder; //how many bits need padding
-                    if (bitSize % 3 != 0) { //wabe, mimsy, MACBETH
+                    if (bitSize % 3 != 0) {
                         String binaryString = buildBinaryString(str, padBits);
                         binaryString = binaryString + '0';//add an extra bit at the end
                         //encode
                         symBuilder = encode(symBuilder, binaryString,bitSize);
-                        //add some padding
-                        //subtract the bit we added to binaryString
-                        padBits = padBits- 1;
-                        //TODO write output to file instead of printing to console
+                        //write the encoded string to the output file
                         writer.write(symBuilder.toString());
                         writer.newLine();
                         System.out.println("Final symBuilder with padding: " + symBuilder.toString());
@@ -33,18 +29,17 @@ public class Symcode {
                         String binaryString = buildBinaryString(str,0);
                         //encode with padding
                         symBuilder = encode(symBuilder,binaryString,bitSize);
-                        //TODO write output to file instead of printing to console
+                        //write the encoded string to the output file
                         writer.write(symBuilder.toString());
                         writer.newLine();
                         System.out.println("Final symBuilder with padding: " + symBuilder.toString());
                     }
-                    //gimble
                 } else { //encode, no need to pad
                     String binaryString = buildBinaryString(str,0);
                     binaryString = binaryString;
                     //encode without padding
                     symBuilder = encode(symBuilder,binaryString);
-                    //TODO write output to file instead of printing to console
+                    //write the encoded string to the output file
                     writer.write(symBuilder.toString());
                     writer.newLine();
                     System.out.println("Final symBuilder with padding: " + symBuilder.toString());
